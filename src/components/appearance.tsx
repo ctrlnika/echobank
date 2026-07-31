@@ -24,13 +24,13 @@ const AppearanceContext = createContext<AppearanceValue | null>(null);
 /** Inline script so the stored theme is applied before first paint (no flash). */
 export const appearanceBootScript = `(function(){try{var d=document.documentElement;var s=JSON.parse(localStorage.getItem(${JSON.stringify(
   STORAGE_KEY,
-)})||"null")||{};var t=s.theme==="light"?"light":"dark";d.classList.toggle("dark",t==="dark");d.classList.toggle("light",t==="light");d.dataset.textScale=s.textScale||"large";}catch(e){}})();`;
+)})||"null")||{};var t=s.theme==="light"?"light":"dark";d.classList.toggle("dark",t==="dark");d.classList.toggle("light",t==="light");d.setAttribute("data-text-scale",s.textScale||"large");}catch(e){}})();`;
 
 function apply(theme: ThemeMode, textScale: TextScale) {
   const el = document.documentElement;
   el.classList.toggle("dark", theme === "dark");
   el.classList.toggle("light", theme === "light");
-  el.dataset.textScale = textScale;
+  el.setAttribute("data-text-scale", textScale);
 }
 
 export function AppearanceProvider({ children }: { children: ReactNode }) {
