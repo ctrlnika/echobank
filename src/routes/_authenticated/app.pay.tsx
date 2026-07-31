@@ -10,7 +10,7 @@ import { runScamCheck, sendPayment } from "@/lib/bank.functions";
 import { formatMoney, poundsToPence, speakAmount } from "@/lib/money";
 import { playEarcon } from "@/lib/audio";
 
-type Search = { payee?: string; amount?: number };
+type Search = { payee?: string | undefined; amount?: number | undefined };
 
 export const Route = createFileRoute("/_authenticated/app/pay")({
   validateSearch: (search: Record<string, unknown>): Search => ({

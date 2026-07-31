@@ -17,10 +17,10 @@ function Settings() {
   const { say } = useEcho();
   const [busy, setBusy] = useState(false);
 
-  async function patch(update: Parameters<typeof updateSettings>[0]["data"]) {
+  async function patch(update: Record<string, string | number | boolean>) {
     setBusy(true);
     try {
-      await updateSettings({ data: update });
+      await updateSettings({ data: update as never });
       await queryClient.invalidateQueries();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not save that");
