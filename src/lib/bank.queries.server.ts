@@ -308,12 +308,17 @@ export async function savePayee(
     return { ok: false as const, reason: `${input.name} is already saved.` };
   }
 
-  const row: Record<string, unknown> = { user_id: userId, name: input.name };
-  if (input.relationship) row["relationship"] = input.relationship;
-  if (input.sortCode) row["sort_code"] = normaliseSortCode(input.sortCode);
-  if (input.accountNumber) row["last4"] = input.accountNumber.slice(-4);
-
-  const { data, error } = await db.from("payees").insert(row).select("id").single();
+  const { data, error } = await db
+    .from("payees")
+    .insert({
+      user_id: userId,
+      name: input.name,
+      ...(input.relationship ? { relationship: input.relationship } : {}),
+      ...(input.sortCode ? { sort_code: normaliseSortCode(input.sortCode) } : {}),
+      ...(input.accountNumber ? { last4: input.accountNumber.slice(-4) } : {}),
+    })
+    .select("id")
+    .single();
   if (error) throw new Error(`Saving that person: ${error.message}`);
   return {
     ok: true as const,
