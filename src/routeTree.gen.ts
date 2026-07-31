@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PitchRouteImport } from './routes/pitch'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as AuthenticatedAppActivityRouteImport } from './routes/_authenticated/app.activity'
+import { Route as AuthenticatedAppAssistantRouteImport } from './routes/_authenticated/app.assistant'
 import { Route as AuthenticatedAppLettersRouteImport } from './routes/_authenticated/app.letters'
 import { Route as AuthenticatedAppPayRouteImport } from './routes/_authenticated/app.pay'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
@@ -33,6 +35,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PitchRoute = PitchRouteImport.update({
+  id: '/pitch',
+  path: '/pitch',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -47,6 +54,12 @@ const AuthenticatedAppActivityRoute =
   AuthenticatedAppActivityRouteImport.update({
     id: '/activity',
     path: '/activity',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppAssistantRoute =
+  AuthenticatedAppAssistantRouteImport.update({
+    id: '/assistant',
+    path: '/assistant',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppLettersRoute = AuthenticatedAppLettersRouteImport.update({
@@ -69,8 +82,10 @@ const AuthenticatedAppSettingsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/pitch': typeof PitchRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/app/activity': typeof AuthenticatedAppActivityRoute
+  '/app/assistant': typeof AuthenticatedAppAssistantRoute
   '/app/letters': typeof AuthenticatedAppLettersRoute
   '/app/pay': typeof AuthenticatedAppPayRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -79,7 +94,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/pitch': typeof PitchRoute
   '/app/activity': typeof AuthenticatedAppActivityRoute
+  '/app/assistant': typeof AuthenticatedAppAssistantRoute
   '/app/letters': typeof AuthenticatedAppLettersRoute
   '/app/pay': typeof AuthenticatedAppPayRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -90,8 +107,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/pitch': typeof PitchRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/app/activity': typeof AuthenticatedAppActivityRoute
+  '/_authenticated/app/assistant': typeof AuthenticatedAppAssistantRoute
   '/_authenticated/app/letters': typeof AuthenticatedAppLettersRoute
   '/_authenticated/app/pay': typeof AuthenticatedAppPayRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -102,8 +121,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/pitch'
     | '/app'
     | '/app/activity'
+    | '/app/assistant'
     | '/app/letters'
     | '/app/pay'
     | '/app/settings'
@@ -112,7 +133,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/pitch'
     | '/app/activity'
+    | '/app/assistant'
     | '/app/letters'
     | '/app/pay'
     | '/app/settings'
@@ -122,8 +145,10 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/pitch'
     | '/_authenticated/app'
     | '/_authenticated/app/activity'
+    | '/_authenticated/app/assistant'
     | '/_authenticated/app/letters'
     | '/_authenticated/app/pay'
     | '/_authenticated/app/settings'
@@ -134,6 +159,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  PitchRoute: typeof PitchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -159,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pitch': {
+      id: '/pitch'
+      path: '/pitch'
+      fullPath: '/pitch'
+      preLoaderRoute: typeof PitchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/app': {
       id: '/_authenticated/app'
       path: '/app'
@@ -178,6 +211,13 @@ declare module '@tanstack/react-router' {
       path: '/activity'
       fullPath: '/app/activity'
       preLoaderRoute: typeof AuthenticatedAppActivityRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/assistant': {
+      id: '/_authenticated/app/assistant'
+      path: '/assistant'
+      fullPath: '/app/assistant'
+      preLoaderRoute: typeof AuthenticatedAppAssistantRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/letters': {
@@ -206,6 +246,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppActivityRoute: typeof AuthenticatedAppActivityRoute
+  AuthenticatedAppAssistantRoute: typeof AuthenticatedAppAssistantRoute
   AuthenticatedAppLettersRoute: typeof AuthenticatedAppLettersRoute
   AuthenticatedAppPayRoute: typeof AuthenticatedAppPayRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
@@ -214,6 +255,7 @@ interface AuthenticatedAppRouteChildren {
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppActivityRoute: AuthenticatedAppActivityRoute,
+  AuthenticatedAppAssistantRoute: AuthenticatedAppAssistantRoute,
   AuthenticatedAppLettersRoute: AuthenticatedAppLettersRoute,
   AuthenticatedAppPayRoute: AuthenticatedAppPayRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
@@ -238,6 +280,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  PitchRoute: PitchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
