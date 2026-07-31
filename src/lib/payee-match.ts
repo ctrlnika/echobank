@@ -20,8 +20,8 @@ function skeleton(input: string): string {
     .replace(/c/g, "k")
     .replace(/z/g, "s")
     .replace(/x/g, "ks")
-    .replace(/w/g, "v")
-    .replace(/h/g, "")
+    // w and h carry no reliable sound in mishearings ("new car" ~ "Nika").
+    .replace(/[wh]/g, "")
     .replace(VOWELS, "")
     .replace(/(.)\1+/g, "$1");
 }
@@ -59,11 +59,14 @@ export function matchPayeeName(heard: string, names: readonly string[]): string 
   const spokenSkeleton = skeleton(spoken);
   if (!spokenSkeleton) return null;
 
+  const firstWord = spoken.split(/\s+/)[0] ?? "";
+  const spokenVariants = [spokenSkeleton, skeleton(firstWord)].filter(Boolean);
+
   let best: { name: string; score: number } | null = null;
   for (const name of names) {
     const nameSkeleton = skeleton(name);
     if (!nameSkeleton) continue;
-    const distance = levenshtein(spokenSkeleton, nameSkeleton);
+    const distance = Math.min(...spokenVariants.map((v) => levenshtein(v, nameSkeleton)));
     // Allow one slip per two skeleton characters, at least one.
     const tolerance = Math.max(1, Math.floor(nameSkeleton.length / 2));
     if (distance <= tolerance && (!best || distance < best.score)) {
