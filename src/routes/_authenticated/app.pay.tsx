@@ -276,7 +276,7 @@ function Pay() {
           </p>
           {selectedPayee || newSortCode || newAccountNumber ? (
             <p className="mt-1 text-base tabular-nums text-muted-foreground">
-              Sort code {selectedPayee?.sortCode ?? newSortCode || "not given"} · Account{" "}
+              Sort code {selectedPayee ? selectedPayee.sortCode : newSortCode || "not given"} · Account{" "}
               {selectedPayee ? `ending ${selectedPayee.last4}` : newAccountNumber || "not given"}
             </p>
           ) : null}
