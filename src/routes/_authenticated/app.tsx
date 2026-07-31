@@ -103,6 +103,34 @@ function AppLayout() {
     [data, navigate, say],
   );
 
+  const beginListening = useCallback(() => {
+    unlockAudio();
+    playEarcon("listening");
+    speech.startListening();
+  }, [speech]);
+
+  // Space anywhere on the page = tap and speak, unless the focus is somewhere
+  // that already owns the space key (typing, or a button such as hold-to-pay).
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.code !== "Space" && event.key !== " ") return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (
+        target &&
+        (target.isContentEditable ||
+          target.closest("input, textarea, select, button, [role='button'], [contenteditable='true']"))
+      ) {
+        return;
+      }
+      event.preventDefault();
+      if (speech.isListening) speech.stopListening();
+      else beginListening();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [beginListening, speech]);
+
   async function signOut() {
     await supabase.auth.signOut();
     await navigate({ to: "/", replace: true });
@@ -116,11 +144,7 @@ function AppLayout() {
         stopSpeaking: speech.cancelSpeech,
         isSpeaking: speech.isSpeaking,
         isListening: speech.isListening,
-        startListening: () => {
-          unlockAudio();
-          playEarcon("listening");
-          speech.startListening();
-        },
+        startListening: beginListening,
         recognitionSupported: speech.recognitionSupported,
         lastSpoken,
       }}
@@ -148,16 +172,18 @@ function AppLayout() {
               {speech.isListening ? "Listening…" : speech.interim || lastSpoken}
             </p>
             <button
-              onClick={() => {
-                unlockAudio();
-                playEarcon("listening");
-                speech.startListening();
-              }}
-              aria-label="Speak a command"
+              onClick={() => (speech.isListening ? speech.stopListening() : beginListening())}
+              aria-label="Speak a command. Shortcut: press the space bar."
+              aria-pressed={speech.isListening}
               className="min-h-14 w-full rounded-2xl bg-primary text-lg font-bold text-primary-foreground transition hover:bg-primary/90"
             >
               {speech.isListening ? "Listening — speak now" : "Tap and speak"}
+              <span className="ml-2 text-sm font-semibold opacity-80">Space</span>
             </button>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              Press <kbd className="rounded bg-accent px-1.5 py-0.5 font-semibold">Space</kbd> anywhere to speak · hold{" "}
+              <kbd className="rounded bg-accent px-1.5 py-0.5 font-semibold">Space</kbd> on a payment button to send
+            </p>
             <nav aria-label="Sections" className="mt-3 flex justify-between gap-1">
               {NAV.map((item) => {
                 const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);

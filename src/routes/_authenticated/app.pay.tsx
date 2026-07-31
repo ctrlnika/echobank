@@ -33,8 +33,12 @@ function Pay() {
   const [context, setContext] = useState("");
   const [check, setCheck] = useState<Check | null>(null);
   const [busy, setBusy] = useState(false);
+  const [newSortCode, setNewSortCode] = useState("");
+  const [newAccountNumber, setNewAccountNumber] = useState("");
 
   const amountPence = poundsToPence(amount);
+  const selectedPayee =
+    (payees ?? []).find((p) => p.name.toLowerCase() === payee.trim().toLowerCase()) ?? null;
 
   async function review() {
     if (!payee.trim() || amountPence <= 0) {
@@ -48,8 +52,11 @@ function Pay() {
       });
       setCheck(result);
       playEarcon(result.level === "high" ? "scam" : result.level === "medium" ? "warning" : "success");
+      const details = selectedPayee
+        ? ` Sort code ${speakSortCode(selectedPayee.sortCode)}, account ending ${selectedPayee.last4.split("").join(" ")}.`
+        : "";
       say(
-        `${result.summary} Paying ${payee.trim()}, ${speakAmount(amountPence)}. ` +
+        `${result.summary} Paying ${payee.trim()}, ${speakAmount(amountPence)}.${details} ` +
           result.signals.map((s) => s.detail).join(" "),
       );
     } catch (error) {
@@ -114,7 +121,92 @@ function Pay() {
               <option key={p.id} value={p.name} />
             ))}
           </datalist>
+
+          <ul aria-label="Saved people" className="mt-3 space-y-2">
+            {(payees ?? []).map((p) => {
+              const selected = p.name.toLowerCase() === payee.trim().toLowerCase();
+              return (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => {
+                      setPayee(p.name);
+                      setCheck(null);
+                      say(
+                        `${p.name}. Sort code ${speakSortCode(p.sortCode)}. Account number ending ${p.last4
+                          .split("")
+                          .join(" ")}.`,
+                      );
+                    }}
+                    className={[
+                      "min-h-16 w-full rounded-xl border px-4 py-3 text-left transition",
+                      selected
+                        ? "border-primary bg-accent"
+                        : "border-border bg-card hover:bg-accent",
+                    ].join(" ")}
+                  >
+                    <span className="block text-lg font-semibold text-foreground">
+                      {p.name}
+                      {p.relationship ? (
+                        <span className="text-base font-normal text-muted-foreground"> · {p.relationship}</span>
+                      ) : null}
+                    </span>
+                    <span className="block text-base tabular-nums text-muted-foreground">
+                      Sort code {p.sortCode} · Account ending {p.last4}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
+
+        {selectedPayee ? (
+          <div className="rounded-xl border border-border bg-card p-4">
+            <h2 className="text-base font-semibold text-foreground">Account details</h2>
+            <dl className="mt-2 space-y-1 text-base text-muted-foreground">
+              <div className="flex justify-between gap-4">
+                <dt>Sort code</dt>
+                <dd className="tabular-nums text-foreground">{selectedPayee.sortCode}</dd>
+              </div>
+              <div className="flex justify-between gap-4">
+                <dt>Account number</dt>
+                <dd className="tabular-nums text-foreground">•••• {selectedPayee.last4}</dd>
+              </div>
+            </dl>
+          </div>
+        ) : payee.trim() ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="sortCode" className="text-base font-semibold text-foreground">
+                Sort code
+              </label>
+              <input
+                id="sortCode"
+                inputMode="numeric"
+                placeholder="00-00-00"
+                value={newSortCode}
+                onChange={(e) => setNewSortCode(e.target.value)}
+                className="mt-2 min-h-14 w-full rounded-xl border border-border bg-card px-4 text-lg tabular-nums text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <div>
+              <label htmlFor="accountNumber" className="text-base font-semibold text-foreground">
+                Account number
+              </label>
+              <input
+                id="accountNumber"
+                inputMode="numeric"
+                maxLength={8}
+                placeholder="12345678"
+                value={newAccountNumber}
+                onChange={(e) => setNewAccountNumber(e.target.value.replace(/\D/g, ""))}
+                className="mt-2 min-h-14 w-full rounded-xl border border-border bg-card px-4 text-lg tabular-nums text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+          </div>
+        ) : null}
 
         <div>
           <label htmlFor="amount" className="text-base font-semibold text-foreground">
@@ -185,6 +277,12 @@ function Pay() {
           <p className="mt-6 text-lg font-semibold text-foreground">
             Paying {payee.trim()} {formatMoney(amountPence)}
           </p>
+          {selectedPayee || newSortCode || newAccountNumber ? (
+            <p className="mt-1 text-base tabular-nums text-muted-foreground">
+              Sort code {selectedPayee ? selectedPayee.sortCode : newSortCode || "not given"} · Account{" "}
+              {selectedPayee ? `ending ${selectedPayee.last4}` : newAccountNumber || "not given"}
+            </p>
+          ) : null}
           <div className="mt-3">
             <HoldToConfirm
               label={`Hold to send ${formatMoney(amountPence)}`}
@@ -204,4 +302,12 @@ function Pay() {
       ) : null}
     </div>
   );
+}
+
+/** Reads "20-45-90" as "two zero, four five, nine zero" so it can't be misheard. */
+function speakSortCode(sortCode: string): string {
+  return sortCode
+    .split("-")
+    .map((pair) => pair.split("").join(" "))
+    .join(", ");
 }
