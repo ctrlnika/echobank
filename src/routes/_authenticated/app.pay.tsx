@@ -52,8 +52,11 @@ function Pay() {
       });
       setCheck(result);
       playEarcon(result.level === "high" ? "scam" : result.level === "medium" ? "warning" : "success");
+      const details = selectedPayee
+        ? ` Sort code ${speakSortCode(selectedPayee.sortCode)}, account ending ${selectedPayee.last4.split("").join(" ")}.`
+        : "";
       say(
-        `${result.summary} Paying ${payee.trim()}, ${speakAmount(amountPence)}. ` +
+        `${result.summary} Paying ${payee.trim()}, ${speakAmount(amountPence)}.${details} ` +
           result.signals.map((s) => s.detail).join(" "),
       );
     } catch (error) {
