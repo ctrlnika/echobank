@@ -77,10 +77,13 @@ export function parseCommand(input: string): Command {
 
   if (pay) {
     const amountPence = parseAmount(text);
+    const numberWords = Object.keys(NUMBER_WORDS).join("|");
     const payee = (pay[1] ?? "")
       .replace(/\b(pounds?|quid|please|now|to|for)\b/g, " ")
+      .replace(new RegExp(`\\s*\\b(?:${numberWords})\\b.*$`), " ")
       .replace(/\s+/g, " ")
       .trim();
+
     if (payee && amountPence && amountPence > 0) {
       return {
         kind: "pay",
