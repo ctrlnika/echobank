@@ -59,7 +59,12 @@ function Settings() {
 
       <section className="space-y-3 rounded-2xl border border-border bg-card p-5">
         {[
-          { key: "auto_speak" as const, label: "Speak my balance when I open the app", value: data.profile.autoSpeak },
+          {
+            key: "auto_speak" as const,
+            label: "Speak my balance automatically when I open the app",
+            value: data.profile.autoSpeak,
+          },
+
           { key: "earcons_enabled" as const, label: "Play sound signatures", value: data.profile.earconsEnabled },
           { key: "haptics_enabled" as const, label: "Use vibration", value: data.profile.hapticsEnabled },
         ].map((row) => (
