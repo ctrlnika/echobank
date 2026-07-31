@@ -81,21 +81,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "EchoBank — banking you can hear" },
+      { title: "EchoBank - the current account you can hear" },
       {
         name: "description",
         content:
-          "EchoBank is an audio-first UK current account: speak to bank, hear every balance, and stop scams before the money moves.",
+          "EchoBank is an audio-first UK current account. Every balance is spoken, every category has its own sound, and Scam Shield stops a payment before the money moves.",
       },
-      { property: "og:title", content: "EchoBank — banking you can hear" },
+      { property: "og:title", content: "EchoBank - the current account you can hear" },
       {
         property: "og:description",
         content:
-          "An audio-first UK current account designed with blind and low-vision customers. Voice payments, sound signatures, and Scam Shield.",
+          "EchoBank is an audio-first UK current account. Every balance is spoken, every category has its own sound, and Scam Shield stops a payment before the money moves.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#0b0f14" },
+      { name: "twitter:title", content: "EchoBank - the current account you can hear" },
+      { name: "twitter:description", content: "EchoBank is an audio-first UK current account. Every balance is spoken, every category has its own sound, and Scam Shield stops a payment before the money moves." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8afaea22-7fb9-4408-8a65-51f56ee6b711" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8afaea22-7fb9-4408-8a65-51f56ee6b711" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -105,7 +109,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,

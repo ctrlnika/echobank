@@ -7,17 +7,17 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "EchoBank — the current account you can hear" },
+      { title: "EchoBank - the current account you can hear" },
       {
         name: "description",
         content:
           "EchoBank is an audio-first UK current account. Every balance is spoken, every category has its own sound, and Scam Shield stops a payment before the money moves.",
       },
-      { property: "og:title", content: "EchoBank — the current account you can hear" },
+      { property: "og:title", content: "EchoBank - the current account you can hear" },
       {
         property: "og:description",
         content:
-          "Audio-first banking designed with blind and low-vision customers: voice payments, sound signatures, and Scam Shield.",
+          "EchoBank is an audio-first UK current account. Every balance is spoken, every category has its own sound, and Scam Shield stops a payment before the money moves.",
       },
     ],
   }),
