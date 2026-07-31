@@ -144,11 +144,7 @@ function AppLayout() {
         stopSpeaking: speech.cancelSpeech,
         isSpeaking: speech.isSpeaking,
         isListening: speech.isListening,
-        startListening: () => {
-          unlockAudio();
-          playEarcon("listening");
-          speech.startListening();
-        },
+        startListening: beginListening,
         recognitionSupported: speech.recognitionSupported,
         lastSpoken,
       }}
