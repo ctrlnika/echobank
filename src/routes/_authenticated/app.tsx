@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { EchoContext } from "@/components/echo-context";
+import { EchoContext, type EchoPrefs } from "@/components/echo-context";
 import { useSpeech } from "@/hooks/use-speech";
 import { overviewQuery } from "@/lib/queries";
 import { parseCommand, COMMAND_EXAMPLES } from "@/lib/commands";
@@ -31,7 +31,9 @@ function AppLayout() {
   const { data } = useQuery(overviewQuery());
   const [lastSpoken, setLastSpoken] = useState("");
 
-  const prefs = data?.profile ?? {
+  const prefs: EchoPrefs = data
+    ? { ...data.profile, verbosity: (data.profile.verbosity as EchoPrefs["verbosity"]) ?? "standard" }
+    : {
     displayName: "there",
     speechRate: 1,
     verbosity: "standard" as const,
