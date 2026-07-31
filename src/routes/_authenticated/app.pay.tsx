@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useEcho } from "@/components/echo-context";
 import { HoldToConfirm } from "@/components/hold-to-confirm";
 import { payeesQuery } from "@/lib/queries";
-import { runScamCheck, sendPayment } from "@/lib/bank.functions";
+import { runScamCheck, sendPayment, savePayeeFn } from "@/lib/bank.functions";
 import { formatMoney, poundsToPence, speakAmount } from "@/lib/money";
 import { playEarcon } from "@/lib/audio";
 
@@ -35,10 +35,45 @@ function Pay() {
   const [busy, setBusy] = useState(false);
   const [newSortCode, setNewSortCode] = useState("");
   const [newAccountNumber, setNewAccountNumber] = useState("");
+  const [newRelationship, setNewRelationship] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const amountPence = poundsToPence(amount);
   const selectedPayee =
     (payees ?? []).find((p) => p.name.toLowerCase() === payee.trim().toLowerCase()) ?? null;
+
+  async function saveNewPayee() {
+    const name = payee.trim();
+    if (!name) {
+      toast.error("Type the person's name first.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const result = await savePayeeFn({
+        data: {
+          name,
+          ...(newRelationship.trim() ? { relationship: newRelationship.trim() } : {}),
+          ...(newSortCode.trim() ? { sortCode: newSortCode.trim() } : {}),
+          ...(newAccountNumber.trim() ? { accountNumber: newAccountNumber.trim() } : {}),
+        },
+      });
+      if (!result.ok) {
+        say(result.reason);
+        toast.error(result.reason);
+        return;
+      }
+      playEarcon("success");
+      say(result.spoken);
+      toast.success(result.spoken);
+      setNewRelationship("");
+      await queryClient.invalidateQueries({ queryKey: ["payees"] });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not save that person");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   async function review() {
     if (!payee.trim() || amountPence <= 0) {
@@ -177,7 +212,14 @@ function Pay() {
             </dl>
           </div>
         ) : payee.trim() ? (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+            <div>
+              <h2 className="text-base font-semibold text-foreground">New person</h2>
+              <p className="text-base text-muted-foreground">
+                Add their details, then save them so you can pay by name next time.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="sortCode" className="text-base font-semibold text-foreground">
                 Sort code
@@ -205,6 +247,27 @@ function Pay() {
                 className="mt-2 min-h-14 w-full rounded-xl border border-border bg-card px-4 text-lg tabular-nums text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
+            </div>
+            <div>
+              <label htmlFor="relationship" className="text-base font-semibold text-foreground">
+                How do you know them? (optional)
+              </label>
+              <input
+                id="relationship"
+                placeholder="Neighbour, son, plumber…"
+                value={newRelationship}
+                onChange={(e) => setNewRelationship(e.target.value)}
+                className="mt-2 min-h-14 w-full rounded-xl border border-border bg-card px-4 text-lg text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={saveNewPayee}
+              disabled={saving}
+              className="min-h-14 w-full rounded-xl border border-primary bg-accent text-lg font-bold text-foreground hover:bg-accent/80 disabled:opacity-60"
+            >
+              {saving ? "Saving…" : `Save ${payee.trim()} as a payee`}
+            </button>
           </div>
         ) : null}
 
