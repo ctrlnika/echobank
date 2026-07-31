@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { useEcho } from "@/components/echo-context";
@@ -9,6 +9,7 @@ import { payeesQuery } from "@/lib/queries";
 import { runScamCheck, sendPayment, savePayeeFn } from "@/lib/bank.functions";
 import { formatMoney, poundsToPence, speakAmount } from "@/lib/money";
 import { playEarcon } from "@/lib/audio";
+import { matchPayeeName } from "@/lib/payee-match";
 
 type Search = { payee?: string | undefined; amount?: number | undefined };
 
@@ -37,6 +38,16 @@ function Pay() {
   const [newAccountNumber, setNewAccountNumber] = useState("");
   const [newRelationship, setNewRelationship] = useState("");
   const [saving, setSaving] = useState(false);
+
+  // A name that arrived from speech may be a mishearing ("new car" for
+  // "Nika"): once payees load, snap it onto the saved spelling.
+  const snapped = useRef(false);
+  useEffect(() => {
+    if (snapped.current || !payees?.length || !payee.trim()) return;
+    snapped.current = true;
+    const match = matchPayeeName(payee, payees.map((p) => p.name));
+    if (match && match !== payee) setPayee(match);
+  }, [payees, payee]);
 
   const amountPence = poundsToPence(amount);
   const selectedPayee =
