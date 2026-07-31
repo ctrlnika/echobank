@@ -123,3 +123,20 @@ export const getSpendingSummary = createServerFn({ method: "GET" })
     const { buildSpendingSummary } = await import("./bank.queries.server");
     return buildSpendingSummary(context.supabase, context.userId);
   });
+
+export const savePayeeFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        name: z.string().min(1).max(80),
+        relationship: z.string().max(60).optional(),
+        sortCode: z.string().max(12).optional(),
+        accountNumber: z.string().max(12).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ context, data }) => {
+    const { savePayee } = await import("./bank.queries.server");
+    return savePayee(context.supabase, context.userId, data);
+  });

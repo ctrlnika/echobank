@@ -11,6 +11,7 @@ import { setEarconsEnabled, playEarcon, unlockAudio } from "@/lib/audio";
 import { setHapticsEnabled } from "@/lib/haptics";
 import { speakAmount } from "@/lib/money";
 import { supabase } from "@/integrations/supabase/client";
+import { hasArmedHold } from "@/components/hold-to-confirm";
 
 export const Route = createFileRoute("/_authenticated/app")({
   component: AppLayout,
@@ -115,6 +116,9 @@ function AppLayout() {
     function onKeyDown(event: KeyboardEvent) {
       if (event.code !== "Space" && event.key !== " ") return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.repeat) return;
+      // A payment awaiting confirmation owns the space key.
+      if (hasArmedHold()) return;
       const target = event.target as HTMLElement | null;
       if (
         target &&
