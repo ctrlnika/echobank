@@ -9,6 +9,16 @@ import { playEarcon } from "@/lib/audio";
  * money only moves after a deliberate hold. The hold ticks audibly and
  * haptically each 250ms, so progress is knowable without looking.
  */
+/**
+ * How many hold-to-confirm buttons are currently on screen and enabled.
+ * While one is mounted, the space key belongs to it (hold to send) rather
+ * than to the global tap-and-speak shortcut.
+ */
+let armedHolds = 0;
+export function hasArmedHold(): boolean {
+  return armedHolds > 0;
+}
+
 export function HoldToConfirm({
   label,
   holdLabel,
@@ -80,6 +90,40 @@ export function HoldToConfirm({
     stop();
   }, [holding, stop]);
 
+  // Space anywhere on the page drives this button while it is on screen, so a
+  // blind user never has to hunt for focus before sending a payment.
+  useEffect(() => {
+    if (disabled) return;
+    armedHolds += 1;
+
+    function isSpace(event: KeyboardEvent) {
+      return event.code === "Space" || event.key === " ";
+    }
+    function typing(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      return !!target && (target.isContentEditable || !!target.closest("input, textarea, select, [contenteditable='true']"));
+    }
+    function onDown(event: KeyboardEvent) {
+      if (!isSpace(event) || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (typing(event)) return;
+      event.preventDefault();
+      if (event.repeat) return;
+      start();
+    }
+    function onUp(event: KeyboardEvent) {
+      if (!isSpace(event) || typing(event)) return;
+      event.preventDefault();
+      cancel();
+    }
+    window.addEventListener("keydown", onDown, true);
+    window.addEventListener("keyup", onUp, true);
+    return () => {
+      armedHolds = Math.max(0, armedHolds - 1);
+      window.removeEventListener("keydown", onDown, true);
+      window.removeEventListener("keyup", onUp, true);
+    };
+  }, [disabled, start, cancel]);
+
   return (
     <button
       type="button"
@@ -89,13 +133,13 @@ export function HoldToConfirm({
       onPointerLeave={cancel}
       onPointerCancel={cancel}
       onKeyDown={(e) => {
-        if (e.key === " " || e.key === "Enter") {
+        if (e.key === "Enter") {
           e.preventDefault();
-          if (!holding) start();
+          if (!e.repeat) start();
         }
       }}
       onKeyUp={(e) => {
-        if (e.key === " " || e.key === "Enter") cancel();
+        if (e.key === "Enter") cancel();
       }}
       aria-label={`${label}. Press and hold for ${(durationMs / 1000).toFixed(1)} seconds to confirm.`}
       className={[

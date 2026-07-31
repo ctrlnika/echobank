@@ -115,6 +115,9 @@ function AppLayout() {
     function onKeyDown(event: KeyboardEvent) {
       if (event.code !== "Space" && event.key !== " ") return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.repeat) return;
+      // A payment awaiting confirmation owns the space key.
+      if (hasArmedHold()) return;
       const target = event.target as HTMLElement | null;
       if (
         target &&
