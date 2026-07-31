@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ALTER COLUMN auto_speak SET DEFAULT false; UPDATE public.profiles SET auto_speak = false;
