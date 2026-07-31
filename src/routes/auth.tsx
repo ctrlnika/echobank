@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
+
 import { createDemoSession } from "@/lib/demo.functions";
 import { toast } from "sonner";
 
@@ -65,7 +67,25 @@ function AuthPage() {
     }
   }
 
+  async function signInWithGoogle() {
+    setBusy(true);
+    setNotice(null);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) throw result.error;
+      if (result.redirected) return;
+      await navigate({ to: "/app" });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Google sign-in didn't work");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function startDemo() {
+
     setBusy(true);
     try {
       const demo = await createDemoSession();
@@ -113,7 +133,38 @@ function AuthPage() {
           </p>
         ) : null}
 
-        <form onSubmit={submit} className="mt-8 space-y-5">
+        <button
+          type="button"
+          onClick={signInWithGoogle}
+          disabled={busy}
+          className="mt-8 flex min-h-14 w-full items-center justify-center gap-3 rounded-2xl border border-border bg-card text-lg font-semibold text-foreground transition hover:bg-accent disabled:opacity-60"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" className="size-6">
+            <path
+              fill="#EA4335"
+              d="M12 10.2v3.9h5.5a4.7 4.7 0 0 1-2 3.1l3.2 2.5c1.9-1.7 3-4.3 3-7.4 0-.7-.1-1.4-.2-2.1H12z"
+            />
+            <path
+              fill="#34A853"
+              d="M6.6 14.3 5.9 15l-2.6 2c1.6 3.2 4.9 5.4 8.7 5.4 2.6 0 4.9-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1a5.9 5.9 0 0 1-5.4-4z"
+            />
+            <path fill="#FBBC05" d="M3.3 7c-.7 1.4-1.1 3-1.1 5s.4 3.6 1.1 5l3.3-2.6a6 6 0 0 1 0-4.8L3.3 7z" />
+            <path
+              fill="#4285F4"
+              d="M12 5.4c1.5 0 2.8.5 3.8 1.5l2.9-2.9C16.9 2.4 14.6 1.5 12 1.5 8.2 1.5 4.9 3.7 3.3 7l3.3 2.6A5.9 5.9 0 0 1 12 5.4z"
+            />
+          </svg>
+          Continue with Google
+        </button>
+
+        <div className="my-6 flex items-center gap-4">
+          <span className="h-px flex-1 bg-border" />
+          <span className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">or</span>
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <form onSubmit={submit} className="space-y-5">
+
           {mode === "signup" ? (
             <div>
               <label htmlFor="name" className="text-base font-semibold text-foreground">

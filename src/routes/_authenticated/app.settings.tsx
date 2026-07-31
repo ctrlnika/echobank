@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { useEcho } from "@/components/echo-context";
+import { TEXT_SCALE_LABEL, useAppearance } from "@/components/appearance";
 import { overviewQuery } from "@/lib/queries";
 import { setAccountFrozen, updateSettings } from "@/lib/bank.functions";
 
@@ -15,7 +16,9 @@ function Settings() {
   const { data } = useQuery(overviewQuery());
   const queryClient = useQueryClient();
   const { say } = useEcho();
+  const { theme, textScale, setTheme, setTextScale } = useAppearance();
   const [busy, setBusy] = useState(false);
+
 
   async function patch(update: Record<string, string | number | boolean>) {
     setBusy(true);
@@ -59,7 +62,12 @@ function Settings() {
 
       <section className="space-y-3 rounded-2xl border border-border bg-card p-5">
         {[
-          { key: "auto_speak" as const, label: "Speak my balance when I open the app", value: data.profile.autoSpeak },
+          {
+            key: "auto_speak" as const,
+            label: "Speak my balance automatically when I open the app",
+            value: data.profile.autoSpeak,
+          },
+
           { key: "earcons_enabled" as const, label: "Play sound signatures", value: data.profile.earconsEnabled },
           { key: "haptics_enabled" as const, label: "Use vibration", value: data.profile.hapticsEnabled },
         ].map((row) => (
@@ -75,6 +83,58 @@ function Settings() {
           </label>
         ))}
       </section>
+
+      <section className="space-y-5 rounded-2xl border border-border bg-card p-5">
+        <h2 className="font-display text-xl font-bold text-foreground">Look and feel</h2>
+
+        <div>
+          <p id="theme-label" className="text-base font-semibold text-foreground">
+            Theme
+          </p>
+          <div role="group" aria-labelledby="theme-label" className="mt-3 grid grid-cols-2 gap-3">
+            {(["light", "dark"] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setTheme(mode)}
+                aria-pressed={theme === mode}
+                className={[
+                  "min-h-14 rounded-xl border text-base font-semibold capitalize",
+                  theme === mode
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border text-foreground hover:bg-accent",
+                ].join(" ")}
+              >
+                {mode} mode
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p id="scale-label" className="text-base font-semibold text-foreground">
+            Text size
+          </p>
+          <div role="group" aria-labelledby="scale-label" className="mt-3 grid grid-cols-3 gap-3">
+            {(["normal", "large", "xlarge"] as const).map((scale) => (
+              <button
+                key={scale}
+                onClick={() => setTextScale(scale)}
+                aria-pressed={textScale === scale}
+                className={[
+                  "min-h-14 rounded-xl border px-2 text-base font-semibold",
+                  textScale === scale
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border text-foreground hover:bg-accent",
+                ].join(" ")}
+              >
+                {TEXT_SCALE_LABEL[scale]}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
 
       <section className="rounded-2xl border border-border bg-card p-5">
         <h2 className="font-display text-xl font-bold text-foreground">Card and payments</h2>

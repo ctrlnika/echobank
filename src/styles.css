@@ -121,12 +121,47 @@
   --cat-other: oklch(1 0 0);
 }
 
+/* Light mode: warm paper canvas, same one signal colour, still AA+ contrast. */
+.light {
+  --background: oklch(0.985 0.005 95);
+  --foreground: oklch(0.19 0.015 268);
+  --surface: oklch(1 0 0);
+  --surface-raised: oklch(0.945 0.008 268);
+  --muted-foreground: oklch(0.44 0.015 268);
+
+  --primary: oklch(0.55 0.14 62);
+  --primary-foreground: oklch(0.99 0.005 95);
+
+  --destructive: oklch(0.51 0.19 25);
+  --destructive-foreground: oklch(0.99 0.005 25);
+  --success: oklch(0.46 0.12 158);
+  --success-foreground: oklch(0.99 0.005 158);
+  --warning: oklch(0.52 0.13 62);
+  --warning-foreground: oklch(0.99 0.005 62);
+
+  --border: oklch(0.86 0.008 268);
+  --border-strong: oklch(0.68 0.012 268);
+  --ring: oklch(0.5 0.15 62);
+
+  --cat-groceries: oklch(0.45 0.13 130);
+  --cat-transport: oklch(0.45 0.13 250);
+  --cat-bills: oklch(0.47 0.13 45);
+  --cat-transfer: oklch(0.45 0.14 300);
+  --cat-income: oklch(0.44 0.12 158);
+  --cat-other: oklch(0.42 0.02 268);
+}
+
+html[data-text-scale="normal"] {
+  font-size: 100%;
+}
+html,
 html[data-text-scale="large"] {
   font-size: 118%;
 }
 html[data-text-scale="xlarge"] {
-  font-size: 136%;
+  font-size: 140%;
 }
+
 
 @layer base {
   * {
