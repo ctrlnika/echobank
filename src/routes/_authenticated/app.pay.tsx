@@ -274,6 +274,12 @@ function Pay() {
           <p className="mt-6 text-lg font-semibold text-foreground">
             Paying {payee.trim()} {formatMoney(amountPence)}
           </p>
+          {selectedPayee || newSortCode || newAccountNumber ? (
+            <p className="mt-1 text-base tabular-nums text-muted-foreground">
+              Sort code {selectedPayee?.sortCode ?? newSortCode || "not given"} · Account{" "}
+              {selectedPayee ? `ending ${selectedPayee.last4}` : newAccountNumber || "not given"}
+            </p>
+          ) : null}
           <div className="mt-3">
             <HoldToConfirm
               label={`Hold to send ${formatMoney(amountPence)}`}
