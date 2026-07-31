@@ -37,7 +37,7 @@ function Home() {
           {formatMoney(data.account.balancePence)}
         </p>
         <p className="mt-2 text-base text-muted-foreground">
-          {data.account.name} · {data.account.sortCode} · ends {data.account.last4}
+          {data.account.name} · {data.account.sortCode} · {data.account.accountNumber}
           {data.account.frozen ? " · frozen" : ""}
         </p>
         <button
