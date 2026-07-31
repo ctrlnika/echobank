@@ -34,9 +34,23 @@ function parseAmount(text: string): number | null {
   return null;
 }
 
+/**
+ * Speech recognition regularly hears "play"/"pei"/"bay" for "pay", and
+ * "sent"/"sand" for "send". Rewrite those to the intended verb before parsing,
+ * but only when they lead the phrase or are followed by a name or amount.
+ */
+const PAY_HOMOPHONES =
+  /\b(play|plays|played|playing|pray|prey|pey|pei|pai|pae|bay|bae|spay|pays|paid|paypal)\b(?=\s+(?:£|\d|[a-z]))/g;
+const SEND_HOMOPHONES = /\b(sent|sand|sen|send it|cent)\b(?=\s+(?:£|\d|[a-z]))/g;
+
+function normaliseVerbs(text: string): string {
+  return text.replace(PAY_HOMOPHONES, "pay").replace(SEND_HOMOPHONES, "send");
+}
+
 export function parseCommand(input: string): Command {
   const text = input.trim().toLowerCase();
   if (!text) return { kind: "unknown", text: input };
+
 
   if (/\b(balance|how much|what have i got|money left|funds)\b/.test(text)) return { kind: "balance" };
   if (/\b(activity|transactions|recent|what did i spend|statement|history)\b/.test(text)) {
@@ -56,15 +70,20 @@ export function parseCommand(input: string): Command {
   }
   if (/\b(help|what can (i|you) (say|do)|commands?)\b/.test(text)) return { kind: "help" };
 
-  const pay = text.match(
+  const normalised = normaliseVerbs(text);
+  const pay = normalised.match(
     /\b(?:pay|send|transfer|give)\s+(?:£?\s*[\d.]+\s*(?:pounds?|quid)?\s*(?:to)?\s*)?([a-z][a-z '’-]{0,40}?)(?:\s+(?:£?\s*[\d.]+.*))?$/,
   );
+
   if (pay) {
     const amountPence = parseAmount(text);
+    const numberWords = Object.keys(NUMBER_WORDS).join("|");
     const payee = (pay[1] ?? "")
       .replace(/\b(pounds?|quid|please|now|to|for)\b/g, " ")
+      .replace(new RegExp(`\\s*\\b(?:${numberWords})\\b.*$`), " ")
       .replace(/\s+/g, " ")
       .trim();
+
     if (payee && amountPence && amountPence > 0) {
       return {
         kind: "pay",
