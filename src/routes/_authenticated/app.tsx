@@ -103,6 +103,34 @@ function AppLayout() {
     [data, navigate, say],
   );
 
+  const beginListening = useCallback(() => {
+    unlockAudio();
+    playEarcon("listening");
+    speech.startListening();
+  }, [speech]);
+
+  // Space anywhere on the page = tap and speak, unless the focus is somewhere
+  // that already owns the space key (typing, or a button such as hold-to-pay).
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.code !== "Space" && event.key !== " ") return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (
+        target &&
+        (target.isContentEditable ||
+          target.closest("input, textarea, select, button, [role='button'], [contenteditable='true']"))
+      ) {
+        return;
+      }
+      event.preventDefault();
+      if (speech.isListening) speech.stopListening();
+      else beginListening();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [beginListening, speech]);
+
   async function signOut() {
     await supabase.auth.signOut();
     await navigate({ to: "/", replace: true });
