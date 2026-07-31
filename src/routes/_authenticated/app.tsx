@@ -5,13 +5,14 @@ import { toast } from "sonner";
 
 import { EchoContext, type EchoPrefs } from "@/components/echo-context";
 import { useSpeech } from "@/hooks/use-speech";
-import { overviewQuery } from "@/lib/queries";
+import { overviewQuery, payeesQuery } from "@/lib/queries";
 import { parseCommand, COMMAND_EXAMPLES } from "@/lib/commands";
 import { setEarconsEnabled, playEarcon, unlockAudio } from "@/lib/audio";
 import { setHapticsEnabled } from "@/lib/haptics";
 import { speakAmount } from "@/lib/money";
 import { supabase } from "@/integrations/supabase/client";
 import { hasArmedHold } from "@/components/hold-to-confirm";
+import { matchPayeeName } from "@/lib/payee-match";
 
 export const Route = createFileRoute("/_authenticated/app")({
   component: AppLayout,
@@ -30,6 +31,7 @@ function AppLayout() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { data } = useQuery(overviewQuery());
+  const { data: payees } = useQuery(payeesQuery());
   const [lastSpoken, setLastSpoken] = useState("");
 
   const prefs: EchoPrefs = data
@@ -78,12 +80,21 @@ function AppLayout() {
           void navigate({ to: "/app/letters" });
           return;
         case "people":
-        case "pay":
+        case "pay": {
+          if (command.kind !== "pay") {
+            void navigate({ to: "/app/pay", search: {} });
+            return;
+          }
+          // Speech recognition mangles short names ("Nika" -> "new car"), so
+          // snap the heard name onto a saved payee when it sounds like one.
+          const names = (payees ?? []).map((p) => p.name);
+          const resolved = matchPayeeName(command.payee, names) ?? command.payee;
           void navigate({
             to: "/app/pay",
-            search: command.kind === "pay" ? { payee: command.payee, amount: command.amountPence } : {},
+            search: { payee: resolved, amount: command.amountPence },
           });
           return;
+        }
         case "spending":
           void navigate({ to: "/app/activity" });
           return;
@@ -101,7 +112,7 @@ function AppLayout() {
           void navigate({ to: "/app/assistant", search: { q: transcript } });
       }
     },
-    [data, navigate, say],
+    [data, navigate, payees, say],
   );
 
   const beginListening = useCallback(() => {
