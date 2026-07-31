@@ -66,7 +66,7 @@ export async function loadOverview(db: Db, userId: string) {
       verbosity: profile?.verbosity ?? "standard",
       hapticsEnabled: profile?.haptics_enabled ?? true,
       earconsEnabled: profile?.earcons_enabled ?? true,
-      autoSpeak: profile?.auto_speak ?? true,
+      autoSpeak: profile?.auto_speak ?? false,
       onboarded: profile?.onboarded ?? false,
     },
     account: {

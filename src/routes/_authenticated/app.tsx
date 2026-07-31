@@ -39,7 +39,7 @@ function AppLayout() {
     verbosity: "standard" as const,
     hapticsEnabled: true,
     earconsEnabled: true,
-    autoSpeak: true,
+    autoSpeak: false,
     onboarded: false,
   };
 
