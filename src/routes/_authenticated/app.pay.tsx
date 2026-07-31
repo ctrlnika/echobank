@@ -294,3 +294,11 @@ function Pay() {
     </div>
   );
 }
+
+/** Reads "20-45-90" as "two zero, four five, nine zero" so it can't be misheard. */
+function speakSortCode(sortCode: string): string {
+  return sortCode
+    .split("-")
+    .map((pair) => pair.split("").join(" "))
+    .join(", ");
+}
