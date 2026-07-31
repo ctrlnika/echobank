@@ -33,8 +33,12 @@ function Pay() {
   const [context, setContext] = useState("");
   const [check, setCheck] = useState<Check | null>(null);
   const [busy, setBusy] = useState(false);
+  const [newSortCode, setNewSortCode] = useState("");
+  const [newAccountNumber, setNewAccountNumber] = useState("");
 
   const amountPence = poundsToPence(amount);
+  const selectedPayee =
+    (payees ?? []).find((p) => p.name.toLowerCase() === payee.trim().toLowerCase()) ?? null;
 
   async function review() {
     if (!payee.trim() || amountPence <= 0) {
