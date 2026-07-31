@@ -11,6 +11,7 @@ import { setEarconsEnabled, playEarcon, unlockAudio } from "@/lib/audio";
 import { setHapticsEnabled } from "@/lib/haptics";
 import { speakAmount } from "@/lib/money";
 import { supabase } from "@/integrations/supabase/client";
+import { hasArmedHold } from "@/components/hold-to-confirm";
 
 export const Route = createFileRoute("/_authenticated/app")({
   component: AppLayout,
