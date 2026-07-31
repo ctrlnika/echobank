@@ -48,9 +48,9 @@ function normaliseVerbs(text: string): string {
 }
 
 export function parseCommand(input: string): Command {
-  const raw = input.trim().toLowerCase();
-  const text = raw;
+  const text = input.trim().toLowerCase();
   if (!text) return { kind: "unknown", text: input };
+
 
   if (/\b(balance|how much|what have i got|money left|funds)\b/.test(text)) return { kind: "balance" };
   if (/\b(activity|transactions|recent|what did i spend|statement|history)\b/.test(text)) {
