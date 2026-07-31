@@ -35,6 +35,7 @@ export async function provisionAccount(db: Db, userId: string, displayName: stri
       kind: "current",
       sort_code: "20-45-90",
       last4: "4417",
+      account_number: "31204417",
       balance_pence: 128450,
     })
     .select("id")
@@ -42,11 +43,11 @@ export async function provisionAccount(db: Db, userId: string, displayName: stri
   if (accountError || !account) throw new Error(accountError?.message ?? "Could not open the account");
 
   const payees = [
-    { name: "Sam", relationship: "Brother", trusted: true, times_paid: 14, last4: "8821", last_paid_at: ago(3 * DAY) },
-    { name: "Mum", relationship: "Mother", trusted: true, times_paid: 31, last4: "1190", last_paid_at: ago(9 * DAY) },
-    { name: "Jess", relationship: "Cleaner", trusted: true, times_paid: 22, last4: "4402", last_paid_at: ago(6 * DAY) },
-    { name: "Priya", relationship: "Piano teacher", trusted: true, times_paid: 8, last4: "7734", last_paid_at: ago(11 * DAY) },
-    { name: "Landlord", relationship: "Housing", trusted: true, times_paid: 19, last4: "0056", last_paid_at: ago(21 * DAY) },
+    { name: "Sam", relationship: "Brother", trusted: true, times_paid: 14, last4: "8821", account_number: "60418821", last_paid_at: ago(3 * DAY) },
+    { name: "Mum", relationship: "Mother", trusted: true, times_paid: 31, last4: "1190", account_number: "72301190", last_paid_at: ago(9 * DAY) },
+    { name: "Jess", relationship: "Cleaner", trusted: true, times_paid: 22, last4: "4402", account_number: "19884402", last_paid_at: ago(6 * DAY) },
+    { name: "Priya", relationship: "Piano teacher", trusted: true, times_paid: 8, last4: "7734", account_number: "40567734", last_paid_at: ago(11 * DAY) },
+    { name: "Landlord", relationship: "Housing", trusted: true, times_paid: 19, last4: "0056", account_number: "83120056", last_paid_at: ago(21 * DAY) },
   ];
   await db.from("payees").insert(payees.map((p) => ({ ...p, user_id: userId })));
 

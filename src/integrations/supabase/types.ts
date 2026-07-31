@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       accounts: {
         Row: {
+          account_number: string
           balance_pence: number
           created_at: string
           frozen: boolean
@@ -27,6 +28,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          account_number?: string
           balance_pence?: number
           created_at?: string
           frozen?: boolean
@@ -38,6 +40,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          account_number?: string
           balance_pence?: number
           created_at?: string
           frozen?: boolean
@@ -112,6 +115,7 @@ export type Database = {
       }
       payees: {
         Row: {
+          account_number: string
           created_at: string
           id: string
           last_paid_at: string | null
@@ -124,6 +128,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          account_number?: string
           created_at?: string
           id?: string
           last_paid_at?: string | null
@@ -136,6 +141,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          account_number?: string
           created_at?: string
           id?: string
           last_paid_at?: string | null

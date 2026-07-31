@@ -74,6 +74,7 @@ export async function loadOverview(db: Db, userId: string) {
       name: account.name,
       sortCode: account.sort_code,
       last4: account.last4,
+      accountNumber: account.account_number,
       balancePence: Number(account.balance_pence),
       frozen: account.frozen,
     },
@@ -187,6 +188,7 @@ export async function loadPayees(db: Db, userId: string) {
     name: p.name,
     relationship: p.relationship,
     last4: p.last4,
+    accountNumber: p.account_number,
     sortCode: p.sort_code,
     trusted: p.trusted,
     timesPaid: p.times_paid,
@@ -315,7 +317,9 @@ export async function savePayee(
       name: input.name,
       ...(input.relationship ? { relationship: input.relationship } : {}),
       ...(input.sortCode ? { sort_code: normaliseSortCode(input.sortCode) } : {}),
-      ...(input.accountNumber ? { last4: input.accountNumber.slice(-4) } : {}),
+      ...(input.accountNumber
+        ? { last4: input.accountNumber.slice(-4), account_number: input.accountNumber }
+        : {}),
     })
     .select("id")
     .single();

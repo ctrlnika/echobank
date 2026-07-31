@@ -88,7 +88,7 @@ function Pay() {
       setCheck(result);
       playEarcon(result.level === "high" ? "scam" : result.level === "medium" ? "warning" : "success");
       const details = selectedPayee
-        ? ` Sort code ${speakSortCode(selectedPayee.sortCode)}, account ending ${selectedPayee.last4.split("").join(" ")}.`
+        ? ` Sort code ${speakSortCode(selectedPayee.sortCode)}, account number ${selectedPayee.accountNumber.split("").join(" ")}.`
         : "";
       say(
         `${result.summary} Paying ${payee.trim()}, ${speakAmount(amountPence)}.${details} ` +
@@ -169,7 +169,7 @@ function Pay() {
                       setPayee(p.name);
                       setCheck(null);
                       say(
-                        `${p.name}. Sort code ${speakSortCode(p.sortCode)}. Account number ending ${p.last4
+                        `${p.name}. Sort code ${speakSortCode(p.sortCode)}. Account number ${p.accountNumber
                           .split("")
                           .join(" ")}.`,
                       );
@@ -188,7 +188,7 @@ function Pay() {
                       ) : null}
                     </span>
                     <span className="block text-base tabular-nums text-muted-foreground">
-                      Sort code {p.sortCode} · Account ending {p.last4}
+                      Sort code {p.sortCode} · Account {p.accountNumber}
                     </span>
                   </button>
                 </li>
@@ -207,7 +207,7 @@ function Pay() {
               </div>
               <div className="flex justify-between gap-4">
                 <dt>Account number</dt>
-                <dd className="tabular-nums text-foreground">•••• {selectedPayee.last4}</dd>
+                <dd className="tabular-nums text-foreground">{selectedPayee.accountNumber}</dd>
               </div>
             </dl>
           </div>
@@ -343,7 +343,7 @@ function Pay() {
           {selectedPayee || newSortCode || newAccountNumber ? (
             <p className="mt-1 text-base tabular-nums text-muted-foreground">
               Sort code {selectedPayee ? selectedPayee.sortCode : newSortCode || "not given"} · Account{" "}
-              {selectedPayee ? `ending ${selectedPayee.last4}` : newAccountNumber || "not given"}
+              {selectedPayee ? selectedPayee.accountNumber : newAccountNumber || "not given"}
             </p>
           ) : null}
           <div className="mt-3">
