@@ -287,6 +287,47 @@ export async function performScamCheck(
   return { id: saved?.id ?? null, ...assessment, aiUnavailable };
 }
 
+export async function savePayee(
+  db: Db,
+  userId: string,
+  input: {
+    name: string;
+    relationship?: string | undefined;
+    sortCode?: string | undefined;
+    accountNumber?: string | undefined;
+  },
+) {
+  await ensureReady(db, userId);
+  const existing = await db
+    .from("payees")
+    .select("id")
+    .eq("user_id", userId)
+    .ilike("name", input.name)
+    .maybeSingle();
+  if (existing.data) {
+    return { ok: false as const, reason: `${input.name} is already saved.` };
+  }
+
+  const row: Record<string, unknown> = { user_id: userId, name: input.name };
+  if (input.relationship) row["relationship"] = input.relationship;
+  if (input.sortCode) row["sort_code"] = normaliseSortCode(input.sortCode);
+  if (input.accountNumber) row["last4"] = input.accountNumber.slice(-4);
+
+  const { data, error } = await db.from("payees").insert(row).select("id").single();
+  if (error) throw new Error(`Saving that person: ${error.message}`);
+  return {
+    ok: true as const,
+    id: data.id,
+    spoken: `${input.name} is now saved. You can pay them by name from now on.`,
+  };
+}
+
+function normaliseSortCode(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 6);
+  if (digits.length !== 6) return value;
+  return `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4, 6)}`;
+}
+
 export async function performPayment(
   db: Db,
   userId: string,
