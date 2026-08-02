@@ -1,0 +1,284 @@
+ECHOBANK REVIEW AND FINISH PLAN
+Generated: 2026-08-02
+Repository: echobank
+
+1. EXECUTIVE SUMMARY
+
+EchoBank is a strong competition concept with a real user problem,
+clear accessibility value, and a working MVP shape. The idea is better
+than the current implementation quality. The project is not weak, but
+it is not yet "competition-winning" in its current state because the
+product story overpromises relative to what the demo visibly does.
+
+The good news is that the core concept is strong enough to win if the
+team tightens the story, finishes the missing product flows, and adds
+one memorable feature with clear user and business value.
+
+2. REVIEW FINDINGS
+
+Finding 1 - The assistant is mostly a placeholder, but the product
+story presents it as a real conversational banking assistant.
+
+Evidence:
+- README describes "/app/assistant" as "Conversational banking with
+  streamed responses and full transcript".
+- The actual assistant screen only shows example phrases and a fallback
+  message saying it does not handle the request yet.
+
+Relevant files:
+- README.md lines 57-63
+- src/routes/_authenticated/app.assistant.tsx lines 14-37
+
+Why this matters:
+This creates a credibility gap during a pitch or live demo. Judges hear
+"AI banking assistant" but the actual screen behaves like a stub.
+
+Severity:
+High for product credibility.
+
+Finding 2 - The letters experience does not match the README claim of
+AI summaries.
+
+Evidence:
+- README says "/app/letters" provides "Statements and letters read aloud
+  with AI summaries".
+- The actual letters route renders the raw body text and reads it aloud.
+  There is no summary UI, no summary action, and no summary generation
+  path in the screen itself.
+
+Relevant files:
+- README.md lines 61-63
+- src/routes/_authenticated/app.letters.tsx lines 13-42
+
+Why this matters:
+This is one of the most compelling accessibility use cases, so leaving
+it underpowered weakens the demo and the social impact story.
+
+Severity:
+High for pitch strength.
+
+Finding 3 - The payment confirmation story is only partially
+implemented.
+
+Evidence:
+- README claims "Confirm-by-repeat-back" and says the user must either
+  say the amount back or press and hold.
+- The payment client always submits confirmation: "held".
+- The server accepts both "spoken" and "held", but there is no visible
+  spoken confirmation path in the UI.
+
+Relevant files:
+- README.md lines 39-40 and 163
+- src/routes/_authenticated/app.pay.tsx lines 115-125
+- src/lib/bank.functions.ts lines 74-90
+
+Why this matters:
+Payment safety is one of the app's central ideas. If the confirmation
+story is only half there, the signature innovation looks thinner than
+promised.
+
+Severity:
+High for core feature completeness.
+
+Finding 4 - The "ask someone I trust" and cooling-off path are claimed
+in the story but not surfaced as a usable feature.
+
+Evidence:
+- README says high-risk first payments get a cooling-off and there is an
+  "ask someone I trust" escalation path.
+- The database has trusted_contacts and server code can load them.
+- The risk engine sets requiresCoolingOff for high-risk first payments.
+- There is no visible route or UI flow that lets the user escalate to a
+  trusted contact, and no demonstrated cooling-off workflow in the app.
+
+Relevant files:
+- README.md lines 43, 142, 163
+- src/lib/bank.server.ts lines 117-123 and 216-223
+- src/lib/bank.server.ts lines 99-103
+- src/lib/bank.queries.server.ts lines 228-237
+
+Why this matters:
+This is a major differentiator for fraud prevention and accessible
+trust-building, but right now it behaves more like seeded data than a
+finished product capability.
+
+Severity:
+High for differentiation.
+
+Finding 5 - The pitch page is too thin for a competition final.
+
+Evidence:
+- README describes the pitch route as judge-facing narrative covering
+  problem, architecture, business model, and roadmap.
+- The current pitch page is a short static page with four paragraphs and
+  no architecture, no product flow, no customer story, no proof, no
+  business model, and no roadmap.
+
+Relevant files:
+- README.md lines 63 and 103-153
+- src/routes/pitch.tsx lines 22-67
+
+Why this matters:
+The current pitch surface does not do enough work to convert the idea
+into a winning case.
+
+Severity:
+Medium to high for competition readiness.
+
+3. WHAT IS ALREADY GOOD
+
+The project already has several strong assets:
+
+- the target user is clear
+- the problem is real and emotionally understandable
+- the payment safety framing is strong
+- the scam detection angle has business value, not just social value
+- the route structure is already MVP-shaped
+- the app already has voice, audio, settings, activity, and payment
+  foundations
+- the deterministic scam-check logic is a good piece of defensible
+  product logic
+
+This means the project does not need a new idea. It needs clearer
+execution and tighter storytelling.
+
+4. WHAT IS MISSING TO FINISH THE PROJECT
+
+To reach a competition-ready finish, the team should complete the
+following:
+
+Priority 1 - finish the product promise
+- make the assistant genuinely useful for core banking requests
+- add actual letter summaries, not just full-text reading
+- implement the missing spoken confirmation path for payments
+- surface trusted contacts and the high-risk escalation path
+
+Priority 2 - tighten the payment journey
+- define the payment state flow more clearly:
+  draft -> scam review -> confirm -> sent -> receipt
+- make high-risk payments visibly different from normal payments
+- add an explicit "stop and verify" branch
+
+Priority 3 - improve the demo and pitch layer
+- rebuild the pitch route into a proper judge experience
+- make the product value obvious in under 30 seconds
+- ensure the live demo only shows flows that are truly implemented
+
+Priority 4 - align the repo story with reality
+- remove or soften claims the UI does not yet support
+- document what is implemented versus aspirational
+- reduce the gap between README story and demo behavior
+
+Priority 5 - add minimum test coverage
+- payment confirmation logic
+- scam scoring
+- payee matching
+- transaction explanation fallback behavior
+- letters summary behavior
+
+5. WHAT TO CUT OR DE-EMPHASISE IN THE PITCH
+
+Do not lean too hard on:
+- "full AI assistant"
+- "complete transcript experience"
+- "fully finished AI letters"
+
+Those areas are not strong enough in the visible product right now.
+
+Instead, lead with:
+- accessible banking for blind users
+- safer payments
+- deterministic scam prevention
+- audio-first design
+- independence and dignity
+
+6. WHAT COULD MAKE THIS WIN
+
+The current product is good, but it needs a sharper wow factor.
+
+Recommended wow-factor feature:
+
+SAFE CIRCLE VERIFY
+
+Concept:
+When a payment is high-risk, EchoBank offers a trusted verification path.
+The user can say: "Ask someone I trust."
+
+The app then creates a short spoken verification packet containing:
+- payee name
+- amount
+- why the payment looks risky
+- the user's intended action
+
+That packet can then be:
+- read back to the user
+- shared to a trusted contact
+- confirmed with a very simple yes/no co-sign flow
+
+Why this is powerful:
+- it fits the accessibility mission
+- it fits the fraud-prevention story
+- it is emotionally memorable
+- it is socially responsible
+- it gives judges a clear "I have not seen this before" moment
+- it turns trusted_contacts from dead data into a signature feature
+
+Why this is better than adding random AI glitter:
+It is not decorative. It solves a real problem in a memorable way.
+
+7. WHY SAFE CIRCLE VERIFY IS THE RIGHT WOW FACTOR
+
+It upgrades the product from:
+"a voice-first banking demo"
+
+to:
+"a voice-first safety system for independent banking"
+
+That is a much stronger competition proposition.
+
+It also creates a strong business case:
+- reduces APP fraud risk
+- improves trust in accessible banking
+- creates a defensible differentiator for banks
+
+8. WIN-WORTHY POSITIONING
+
+The strongest positioning for EchoBank is:
+
+"EchoBank is not a screen-reader retrofit. It is a voice-first banking
+experience built for blind customers, with safety and scam prevention at
+the core."
+
+Then the proof points:
+- hear your balance instantly
+- understand transactions by sound and speech
+- send money with safer confirmation
+- detect suspicious payments before money moves
+- escalate risky transfers through Safe Circle Verify
+
+9. RECOMMENDED FINAL DEMO FLOW
+
+If you only show one tight demo, show this:
+
+1. open app and hear spoken summary
+2. review recent activity with earcons
+3. begin a payment to a suspicious new payee
+4. trigger scam signals
+5. hear why the payment is risky
+6. use Safe Circle Verify / trusted-contact escalation
+7. explain that this preserves independence without forcing blind trust
+
+That is a much stronger demo than trying to show every screen.
+
+10. FINAL RECOMMENDATION
+
+EchoBank is worth backing for the competition, but the team should stop
+pretending the current app is more complete than it is. The fastest path
+to a winning result is:
+
+- tighten the product claims
+- finish the missing safety flows
+- turn trusted-contact escalation into the signature feature
+- rebuild the pitch around independence plus fraud prevention
+
+That combination is win-worthy.

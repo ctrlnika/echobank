@@ -1,0 +1,213 @@
+ECHOBANK WINNING PITCH DECK
+Slide-by-slide presentation draft
+Generated: 2026-08-02
+
+SLIDE 1 - TITLE
+
+EchoBank
+Banking you can hear. Banking you can trust.
+
+Subtitle:
+Voice-first accessible banking for blind customers, with built-in fraud
+protection.
+
+Presenter note:
+Lead with confidence. This is not an accessibility add-on. It is a new
+banking interaction model.
+
+SLIDE 2 - THE PROBLEM
+
+Title:
+Blind customers are still banking through interfaces built for sight
+
+Body:
+- Mainstream banking apps assume visual verification
+- Screen readers read what exists, but they do not redesign the flow
+- Blind users still struggle to confirm amounts, scan transactions, and
+  trust payment steps independently
+
+Closer line:
+Accessibility retrofits do not create confidence. They create
+workarounds.
+
+SLIDE 3 - THE USER
+
+Title:
+Who we built this for
+
+Body:
+Our user is a blind customer who wants to bank independently, safely,
+and without relying on another person to read the screen or verify a
+payment.
+
+Key needs:
+- hear balance and account state clearly
+- understand recent activity quickly
+- send money safely
+- avoid scams and pressure tactics
+- hear bank messages without outside help
+
+SLIDE 4 - THE SOLUTION
+
+Title:
+EchoBank is a voice-first banking experience
+
+Body:
+EchoBank is designed around hearing, speech, touch, and confidence.
+Instead of adapting a visual app after the fact, we design the banking
+journey so a blind customer can use it directly.
+
+What it does:
+- spoken balance and account summary
+- audio-guided activity review
+- safer payment flow
+- accessible message reading
+- preference controls for speech, haptics, and sound cues
+
+SLIDE 5 - WHAT MAKES IT DIFFERENT
+
+Title:
+This is not just accessible. It is safer.
+
+Body:
+Most accessibility tools help a blind customer use an existing system.
+EchoBank changes the system itself.
+
+Core differentiators:
+- audio-first design
+- earcons for transaction categories
+- scam-risk checks before payment
+- confirmation designed for blind trust, not blind clicking
+
+SLIDE 6 - PRODUCT DEMO FLOW
+
+Title:
+One customer journey
+
+Body:
+1. Open app and hear a spoken summary
+2. Review recent activity by sound and speech
+3. Start a payment
+4. Detect scam signals before the transfer
+5. Confirm safely
+
+Presenter note:
+Keep the live demo narrow. Do not try to show every feature.
+
+SLIDE 7 - SCAM SHIELD
+
+Title:
+Fraud prevention is part of accessibility
+
+Body:
+EchoBank checks for:
+- new payees
+- unusual amounts
+- out-of-hours behavior
+- urgency and secrecy language
+- impersonation-style requests
+
+Closer line:
+For a blind customer, safety is not a separate feature. It is core UX.
+
+SLIDE 8 - WOW FACTOR
+
+Title:
+Safe Circle Verify
+
+Body:
+If a payment looks risky, EchoBank can say:
+"This does not look safe. Would you like to ask someone you trust?"
+
+What happens next:
+- the app creates a short spoken verification summary
+- it explains the amount, payee, and risk signals
+- the user can escalate to a trusted contact before money moves
+
+Why it matters:
+- supports independence
+- reduces pressure-based fraud
+- creates a memorable product edge
+
+SLIDE 9 - WHY THIS WINS
+
+Title:
+Why judges and banks should care
+
+Body:
+- solves a real accessibility failure
+- reduces fraud risk
+- has emotional and commercial value
+- demonstrates product thinking, not just engineering
+- can extend beyond blind users to anyone who needs safer hands-free
+  banking
+
+SLIDE 10 - BUSINESS VALUE
+
+Title:
+This is a product investment, not a compliance cost
+
+Body:
+- expands access for underserved customers
+- lowers APP fraud exposure
+- improves trust and brand differentiation
+- creates reusable accessibility and safety patterns
+
+Closer line:
+Built for one group. Valuable for many.
+
+SLIDE 11 - WHY NOW
+
+Title:
+Why this matters now
+
+Body:
+- digital banking is still visually biased
+- fraud pressure is rising
+- reimbursement pressure is increasing
+- accessibility expectations are growing
+
+EchoBank sits at the intersection of accessibility, trust, and safer
+digital banking.
+
+SLIDE 12 - WHAT WE HAVE BUILT
+
+Title:
+Current MVP
+
+Body:
+- account home with spoken summary
+- payment flow with scam checking
+- activity review with audio cues
+- letters reading
+- settings for accessibility preferences
+- backend structure with seeded demo data
+
+Presenter note:
+Be honest. Say this is an MVP with strong foundations and a focused next
+step.
+
+SLIDE 13 - WHAT WE WOULD BUILD NEXT
+
+Title:
+Next step to production-strength value
+
+Body:
+- complete assistant journey
+- add real letter summaries
+- finish spoken confirmation path
+- ship Safe Circle Verify
+- harden fraud and accessibility flows
+
+SLIDE 14 - CLOSE
+
+Title:
+Banking should not depend on sight
+
+Body:
+EchoBank gives blind customers something most banking apps still do not:
+independence with confidence.
+
+Closing line:
+We are not making banking easier to hear.
+We are making it safer to trust.
