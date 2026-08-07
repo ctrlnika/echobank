@@ -80,6 +80,9 @@ function AppLayout() {
         case "letters":
           void navigate({ to: "/app/letters" });
           return;
+        case "card":
+          void navigate({ to: "/app/cards" });
+          return;
         case "people":
         case "pay": {
           if (command.kind !== "pay") {
