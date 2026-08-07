@@ -88,11 +88,11 @@ export function parseCommand(input: string): Command {
       .replace(/\s+/g, " ")
       .trim();
 
-    if (payee && amountPence && amountPence > 0) {
+    if (payee) {
       return {
         kind: "pay",
         payee: payee.replace(/\b\w/g, (c) => c.toUpperCase()),
-        amountPence,
+        amountPence: amountPence && amountPence > 0 ? amountPence : null,
       };
     }
   }
