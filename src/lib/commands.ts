@@ -16,6 +16,7 @@ export type Command =
   | { kind: "help" }
   | { kind: "freeze"; frozen: boolean }
   | { kind: "spending" }
+  | { kind: "card" }
   | { kind: "pay"; payee: string; amountPence: number }
   | { kind: "unknown"; text: string };
 
@@ -55,6 +56,9 @@ export function parseCommand(input: string): Command {
   if (/\b(balance|how much|what have i got|money left|funds)\b/.test(text)) return { kind: "balance" };
   if (/\b(activity|transactions|recent|what did i spend|statement|history)\b/.test(text)) {
     return { kind: "activity" };
+  }
+  if (/\b(scan|read|reading|photograph|photo|camera|show)\b[^.]*\bcards?\b/.test(text) || /\bcard (reader|scanner|camera)\b/.test(text)) {
+    return { kind: "card" };
   }
   if (/\b(post|letters?|mail|statements?)\b/.test(text)) return { kind: "letters" };
   if (/\b(people|payees?|contacts?)\b/.test(text)) return { kind: "people" };
@@ -101,5 +105,6 @@ export const COMMAND_EXAMPLES = [
   "Pay Sam twenty pounds",
   "What did I spend this month?",
   "Read my post",
+  "Read my card",
   "Freeze my card",
 ];

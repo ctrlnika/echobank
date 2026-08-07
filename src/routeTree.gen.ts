@@ -17,6 +17,7 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/ap
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as AuthenticatedAppActivityRouteImport } from './routes/_authenticated/app.activity'
 import { Route as AuthenticatedAppAssistantRouteImport } from './routes/_authenticated/app.assistant'
+import { Route as AuthenticatedAppCardsRouteImport } from './routes/_authenticated/app.cards'
 import { Route as AuthenticatedAppLettersRouteImport } from './routes/_authenticated/app.letters'
 import { Route as AuthenticatedAppPayRouteImport } from './routes/_authenticated/app.pay'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
@@ -62,6 +63,11 @@ const AuthenticatedAppAssistantRoute =
     path: '/assistant',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppCardsRoute = AuthenticatedAppCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppLettersRoute = AuthenticatedAppLettersRouteImport.update({
   id: '/letters',
   path: '/letters',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/app/activity': typeof AuthenticatedAppActivityRoute
   '/app/assistant': typeof AuthenticatedAppAssistantRoute
+  '/app/cards': typeof AuthenticatedAppCardsRoute
   '/app/letters': typeof AuthenticatedAppLettersRoute
   '/app/pay': typeof AuthenticatedAppPayRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/pitch': typeof PitchRoute
   '/app/activity': typeof AuthenticatedAppActivityRoute
   '/app/assistant': typeof AuthenticatedAppAssistantRoute
+  '/app/cards': typeof AuthenticatedAppCardsRoute
   '/app/letters': typeof AuthenticatedAppLettersRoute
   '/app/pay': typeof AuthenticatedAppPayRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/app/activity': typeof AuthenticatedAppActivityRoute
   '/_authenticated/app/assistant': typeof AuthenticatedAppAssistantRoute
+  '/_authenticated/app/cards': typeof AuthenticatedAppCardsRoute
   '/_authenticated/app/letters': typeof AuthenticatedAppLettersRoute
   '/_authenticated/app/pay': typeof AuthenticatedAppPayRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/activity'
     | '/app/assistant'
+    | '/app/cards'
     | '/app/letters'
     | '/app/pay'
     | '/app/settings'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/pitch'
     | '/app/activity'
     | '/app/assistant'
+    | '/app/cards'
     | '/app/letters'
     | '/app/pay'
     | '/app/settings'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/_authenticated/app/activity'
     | '/_authenticated/app/assistant'
+    | '/_authenticated/app/cards'
     | '/_authenticated/app/letters'
     | '/_authenticated/app/pay'
     | '/_authenticated/app/settings'
@@ -220,6 +232,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAssistantRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/cards': {
+      id: '/_authenticated/app/cards'
+      path: '/cards'
+      fullPath: '/app/cards'
+      preLoaderRoute: typeof AuthenticatedAppCardsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/letters': {
       id: '/_authenticated/app/letters'
       path: '/letters'
@@ -247,6 +266,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppActivityRoute: typeof AuthenticatedAppActivityRoute
   AuthenticatedAppAssistantRoute: typeof AuthenticatedAppAssistantRoute
+  AuthenticatedAppCardsRoute: typeof AuthenticatedAppCardsRoute
   AuthenticatedAppLettersRoute: typeof AuthenticatedAppLettersRoute
   AuthenticatedAppPayRoute: typeof AuthenticatedAppPayRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
@@ -256,6 +276,7 @@ interface AuthenticatedAppRouteChildren {
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppActivityRoute: AuthenticatedAppActivityRoute,
   AuthenticatedAppAssistantRoute: AuthenticatedAppAssistantRoute,
+  AuthenticatedAppCardsRoute: AuthenticatedAppCardsRoute,
   AuthenticatedAppLettersRoute: AuthenticatedAppLettersRoute,
   AuthenticatedAppPayRoute: AuthenticatedAppPayRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,

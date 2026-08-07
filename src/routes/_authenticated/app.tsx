@@ -23,6 +23,7 @@ const NAV = [
   { to: "/app/activity", label: "Activity", exact: false },
   { to: "/app/pay", label: "Pay", exact: false },
   { to: "/app/letters", label: "Post", exact: false },
+  { to: "/app/cards", label: "Card", exact: false },
   { to: "/app/assistant", label: "Ask", exact: false },
   { to: "/app/settings", label: "Settings", exact: false },
 ] as const;
@@ -78,6 +79,9 @@ function AppLayout() {
           return;
         case "letters":
           void navigate({ to: "/app/letters" });
+          return;
+        case "card":
+          void navigate({ to: "/app/cards" });
           return;
         case "people":
         case "pay": {
