@@ -17,7 +17,7 @@ export type Command =
   | { kind: "freeze"; frozen: boolean }
   | { kind: "spending" }
   | { kind: "card" }
-  | { kind: "pay"; payee: string; amountPence: number }
+  | { kind: "pay"; payee: string; amountPence: number | null }
   | { kind: "unknown"; text: string };
 
 const NUMBER_WORDS: Record<string, number> = {
@@ -88,11 +88,11 @@ export function parseCommand(input: string): Command {
       .replace(/\s+/g, " ")
       .trim();
 
-    if (payee && amountPence && amountPence > 0) {
+    if (payee) {
       return {
         kind: "pay",
         payee: payee.replace(/\b\w/g, (c) => c.toUpperCase()),
-        amountPence,
+        amountPence: amountPence && amountPence > 0 ? amountPence : null,
       };
     }
   }

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { useEcho } from "@/components/echo-context";
@@ -40,14 +40,18 @@ function Pay() {
   const [saving, setSaving] = useState(false);
 
   // A name that arrived from speech may be a mishearing ("new car" for
-  // "Nika"): once payees load, snap it onto the saved spelling.
-  const snapped = useRef(false);
+  // "Nika"): once payees load, snap it onto the saved spelling. Re-runs when a
+  // new voice command arrives while this screen is already open.
   useEffect(() => {
-    if (snapped.current || !payees?.length || !payee.trim()) return;
-    snapped.current = true;
-    const match = matchPayeeName(payee, payees.map((p) => p.name));
-    if (match && match !== payee) setPayee(match);
-  }, [payees, payee]);
+    if (!search.payee) return;
+    const match = payees?.length ? matchPayeeName(search.payee, payees.map((p) => p.name)) : null;
+    setPayee(match ?? search.payee);
+    setCheck(null);
+  }, [search.payee, payees]);
+
+  useEffect(() => {
+    if (search.amount) setAmount((search.amount / 100).toFixed(2));
+  }, [search.amount]);
 
   const amountPence = poundsToPence(amount);
   const selectedPayee =

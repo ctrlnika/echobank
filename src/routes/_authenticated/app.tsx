@@ -95,7 +95,10 @@ function AppLayout() {
           const resolved = matchPayeeName(command.payee, names) ?? command.payee;
           void navigate({
             to: "/app/pay",
-            search: { payee: resolved, amount: command.amountPence },
+            search: {
+              payee: resolved,
+              ...(command.amountPence ? { amount: command.amountPence } : {}),
+            },
           });
           return;
         }
