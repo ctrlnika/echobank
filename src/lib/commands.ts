@@ -17,7 +17,7 @@ export type Command =
   | { kind: "freeze"; frozen: boolean }
   | { kind: "spending" }
   | { kind: "card" }
-  | { kind: "pay"; payee: string; amountPence: number }
+  | { kind: "pay"; payee: string; amountPence: number | null }
   | { kind: "unknown"; text: string };
 
 const NUMBER_WORDS: Record<string, number> = {
