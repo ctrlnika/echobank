@@ -77,6 +77,42 @@ export type Database = {
         }
         Relationships: []
       }
+      cards: {
+        Row: {
+          bin6: string | null
+          brand: string
+          created_at: string
+          expiry: string | null
+          holder_name: string | null
+          id: string
+          label: string
+          last4: string
+          user_id: string
+        }
+        Insert: {
+          bin6?: string | null
+          brand?: string
+          created_at?: string
+          expiry?: string | null
+          holder_name?: string | null
+          id?: string
+          label?: string
+          last4: string
+          user_id: string
+        }
+        Update: {
+          bin6?: string | null
+          brand?: string
+          created_at?: string
+          expiry?: string | null
+          holder_name?: string | null
+          id?: string
+          label?: string
+          last4?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       letters: {
         Row: {
           body: string
