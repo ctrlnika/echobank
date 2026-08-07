@@ -125,7 +125,14 @@ export async function loadCards(db: Db, userId: string) {
 export async function saveCard(
   db: Db,
   userId: string,
-  input: { label: string; brand: string; last4: string; bin6?: string; expiry?: string; holderName?: string },
+  input: {
+    label: string;
+    brand: string;
+    last4: string;
+    bin6?: string | undefined;
+    expiry?: string | undefined;
+    holderName?: string | undefined;
+  },
 ) {
   const { error } = await db.from("cards").insert({
     user_id: userId,
